@@ -1,0 +1,25 @@
+name: CI/CD
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Ruby service CI/CD pipeline.
+# Builds, tests, pushes to ECR, and deploys to ECS Fargate via shared-actions.
+# This file only declares WHAT this service is and WHERE to deploy it.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pipeline:
+    uses: gha-landing-zone/shared-actions/.github/workflows/reusable-ruby-pipeline.yml@v1
+    with:
+      service-name: my-ruby-service
+      deploy-env: staging
+      ecs-cluster: your-cluster-staging
+      ecs-container-name: app
+      ecs-task-definition: .aws/task-definition.json
+    secrets: inherit
